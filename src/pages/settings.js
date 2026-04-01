@@ -255,7 +255,15 @@ window.deleteCategory = async (id) => {
 
 window.deleteAccount = async (id) => {
   if(confirm('Are you sure you want to delete this account?')) {
+    // Delete the main account
     await db.accounts.delete(id);
+    
+    // Also delete any supplementary cards linked to this account
+    const subCards = await db.accounts.filter(a => a.parentCardId === id).toArray();
+    for(const sub of subCards) {
+       await db.accounts.delete(sub.id);
+    }
+    
     loadAccounts();
   }
 };
