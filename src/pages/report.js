@@ -1,5 +1,6 @@
 import { db } from '../db.js';
 import { formatCurrency, formatDateTime } from '../utils/format.js';
+import { showAddTransactionModal } from '../components/addTransaction.js';
 
 export async function renderReport(container) {
   // Get start of month as default
@@ -55,6 +56,10 @@ export async function renderReport(container) {
 
   // initial load
   await generateReport();
+  
+  window.editTransaction = (id) => {
+    showAddTransactionModal(id);
+  };
 }
 
 async function generateReport() {
@@ -133,7 +138,7 @@ async function generateReport() {
         const cat = catMap[tx.categoryId] ? catMap[tx.categoryId].name : 'Unknown';
         const val = tx.type === 'income' ? Number(tx.amount) : -Number(tx.amount);
         html += `
-          <tr style="border-bottom: 1px solid var(--border-color);">
+          <tr style="border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="editTransaction(${tx.id})">
             <td style="padding: 6px 0; color: var(--text-secondary);">${formatDateTime(tx.date)}</td>
             <td style="padding: 6px 8px; text-align: right; font-weight: 500; ${val>0?'color: var(--success-color)':''}">${formatCurrency(val)}</td>
             <td style="padding: 6px 8px;">${tx.note || cat}</td>

@@ -1,5 +1,6 @@
 import { db } from '../db.js';
 import { formatDate, formatCurrency } from '../utils/format.js';
+import { showAddTransactionModal } from '../components/addTransaction.js';
 
 let currentPage = 1;
 const itemsPerPage = 200;
@@ -20,6 +21,10 @@ export async function renderTransactions(container) {
       </div>
     </div>
   `;
+
+  window.editTransaction = (id) => {
+    showAddTransactionModal(id);
+  };
 
   await loadTransactions();
 }
@@ -53,7 +58,7 @@ async function loadTransactions() {
       const isIncome = tx.type === 'income';
 
       return `
-        <div class="tx-item">
+        <div class="tx-item" style="cursor: pointer;" onclick="editTransaction(${tx.id})">
           <div class="tx-icon-wrapper" style="background-color: ${cat.color};">
             <i class="ph ph-${cat.icon}"></i>
           </div>
