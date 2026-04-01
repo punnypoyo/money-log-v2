@@ -1,61 +1,66 @@
 <!doctype html>
 <html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#121212" />
-    <title>Money Log V2</title>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/src/style.css" />
-  </head>
-  <body>
-    <!-- App Container -->
-    <div id="app">
-      <!-- Header -->
-      <header id="app-header">
-        <h1 id="page-title">Dashboard</h1>
-      </header>
 
-      <!-- Main Content Area (Scrollable) -->
-      <main id="main-content">
-        <!-- Rendered Pages will go here -->
-      </main>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#121212" />
+  <title>MoneyLog</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kanit:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
 
-      <!-- Bottom Navigation -->
-      <nav id="bottom-nav">
-        <button class="nav-btn active" data-page="dashboard">
-          <i class="ph ph-squares-four"></i>
-          <span>Dashboard</span>
-        </button>
-        <button class="nav-btn" data-page="transactions">
-          <i class="ph ph-list-dashes"></i>
-          <span>Transactions</span>
-        </button>
-        <button class="nav-btn fab" data-page="add-transaction">
-          <div class="fab-inner">
-             <i class="ph ph-plus" style="color: white; font-size: 24px;"></i>
-          </div>
-        </button>
-        <button class="nav-btn" data-page="report">
-          <i class="ph ph-chart-pie-slice"></i>
-          <span>Report</span>
-        </button>
-        <button class="nav-btn" data-page="settings">
-          <i class="ph ph-gear"></i>
-          <span>Settings</span>
-        </button>
-      </nav>
-    </div>
+<body>
+  <!-- App Container -->
+  <div id="app">
+    <!-- Header -->
+    <header id="app-header">
+      <h1 id="page-title">Dashboard</h1>
+    </header>
 
-    <!-- Modal Container for Add Transaction -->
-    <div id="modal-container" class="hidden">
-      <!-- Modals will be injected here -->
-    </div>
+    <!-- Main Content Area (Scrollable) -->
+    <main id="main-content">
+      <!-- Rendered Pages will go here -->
+    </main>
 
-    <script type="module" src="/src/main.js"></script>
-  </body>
+    <!-- Bottom Navigation -->
+    <nav id="bottom-nav">
+      <button class="nav-btn active" data-page="dashboard">
+        <i class="ph ph-squares-four"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-btn" data-page="transactions">
+        <i class="ph ph-list-dashes"></i>
+        <span>Transactions</span>
+      </button>
+      <button class="nav-btn fab" data-page="add-transaction">
+        <div class="fab-inner">
+          <i class="ph ph-plus" style="color: white; font-size: 24px;"></i>
+        </div>
+      </button>
+      <button class="nav-btn" data-page="report">
+        <i class="ph ph-chart-pie-slice"></i>
+        <span>Report</span>
+      </button>
+      <button class="nav-btn" data-page="settings">
+        <i class="ph ph-gear"></i>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modal Container for Add Transaction -->
+  <div id="modal-container" class="hidden">
+    <!-- Modals will be injected here -->
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+
 </html>
