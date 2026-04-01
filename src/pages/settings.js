@@ -17,6 +17,18 @@ export async function renderSettings(container) {
       </div>
       <div id="account-list"></div>
     </div>
+
+    <div class="card mt-4" style="margin-top: 16px;">
+      <div class="card-header">
+        <h2 class="card-title">Data Backup</h2>
+      </div>
+      <p class="text-secondary text-sm" style="margin-bottom: 12px;">Export your data to a file, or restore from a previous backup. Importing will overwrite all current data.</p>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-primary" style="flex: 1;" onclick="exportData()"><i class="ph ph-export"></i> Backup</button>
+        <button class="btn" style="flex: 1; border: 1px solid var(--primary-color); color: var(--primary-color); background: transparent;" onclick="document.getElementById('import-file').click()"><i class="ph ph-import"></i> Restore</button>
+        <input type="file" id="import-file" style="display: none;" accept=".json" onchange="importData(event)">
+      </div>
+    </div>
   `;
 
   document.getElementById('add-category-btn').addEventListener('click', showAddCategoryModal);
@@ -265,5 +277,61 @@ window.deleteAccount = async (id) => {
     }
     
     loadAccounts();
+  }
+};
+
+window.exportData = async () => {
+  try {
+    const data = {
+      accounts: await db.accounts.toArray(),
+      categories: await db.categories.toArray(),
+      transactions: await db.transactions.toArray()
+    };
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `moneylog-backup-${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('Export failed: ' + err.message);
+  }
+};
+
+window.importData = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (!confirm('WARNING: Importing data will completely erase and replace your current data. Are you sure?')) {
+    event.target.value = ''; // Reset input
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    if (!data.accounts || !data.categories || !data.transactions) {
+        throw new Error('Invalid backup file format.');
+    }
+
+    await db.transaction('rw', db.accounts, db.categories, db.transactions, async () => {
+      await db.accounts.clear();
+      await db.categories.clear();
+      await db.transactions.clear();
+
+      if (data.accounts.length) await db.accounts.bulkAdd(data.accounts);
+      if (data.categories.length) await db.categories.bulkAdd(data.categories);
+      if (data.transactions.length) await db.transactions.bulkAdd(data.transactions);
+    });
+
+    alert('Import successful! The app will now reload.');
+    window.location.reload();
+  } catch (err) {
+    alert('Import failed: ' + err.message);
+  } finally {
+    event.target.value = ''; // Reset input
   }
 };
