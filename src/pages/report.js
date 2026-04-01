@@ -80,10 +80,11 @@ async function generateReport() {
     const start = new Date(fromStr + 'T00:00:00.000');
     const end = new Date(toStr + 'T23:59:59.999');
 
-    let txs = await db.transactions
+    let txs = (await db.transactions
       .where('date')
       .between(start.toISOString(), end.toISOString())
-      .toArray();
+      .toArray())
+      .filter(tx => tx.type !== 'transfer');
 
     if (typeVal !== 'all') {
       txs = txs.filter(tx => tx.type === typeVal);

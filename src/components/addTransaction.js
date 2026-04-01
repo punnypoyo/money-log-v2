@@ -35,6 +35,7 @@ export async function showAddTransactionModal(txId = null) {
           <div class="segmented-control" id="tx-type-segment">
             <button type="button" class="segment-btn active" data-type="expense">Expense</button>
             <button type="button" class="segment-btn" data-type="income">Income</button>
+            <button type="button" class="segment-btn" data-type="transfer">Transfer</button>
           </div>
           <input type="hidden" id="tx-type" value="expense">
 
@@ -49,14 +50,14 @@ export async function showAddTransactionModal(txId = null) {
           </div>
 
           <div class="form-group">
-            <label class="form-label">Account / Payment Method</label>
+            <label class="form-label" id="label-account">Account / Payment Method</label>
             <select id="tx-account" class="form-control" required>
               ${accOptions}
             </select>
           </div>
 
           <div class="form-group">
-            <label class="form-label">Category</label>
+            <label class="form-label" id="label-category">Category</label>
             <select id="tx-category" class="form-control" required>
               ${expCats}
             </select>
@@ -104,6 +105,9 @@ export async function showAddTransactionModal(txId = null) {
   const typeInput = document.getElementById('tx-type');
   const amountInput = document.getElementById('tx-amount');
 
+  const labelAccount = document.getElementById('label-account');
+  const labelCategory = document.getElementById('label-category');
+
   typeBtns.forEach(btn => {
     btn.onclick = () => {
       typeBtns.forEach(b => b.classList.remove('active'));
@@ -112,11 +116,20 @@ export async function showAddTransactionModal(txId = null) {
       typeInput.value = type;
       
       if(type === 'expense') {
+        labelAccount.innerText = 'Account / Payment Method';
+        labelCategory.innerText = 'Category';
         catSelect.innerHTML = expCats;
         amountInput.style.color = 'var(--text-primary)';
-      } else {
+      } else if(type === 'income') {
+        labelAccount.innerText = 'Account / Receive To';
+        labelCategory.innerText = 'Category';
         catSelect.innerHTML = incCats;
         amountInput.style.color = 'var(--success-color)';
+      } else if(type === 'transfer') {
+        labelAccount.innerText = 'From Account';
+        labelCategory.innerText = 'To Account (e.g. Credit Card)';
+        catSelect.innerHTML = accOptions;
+        amountInput.style.color = 'var(--info-color)';
       }
     };
   });

@@ -53,8 +53,27 @@ async function loadTransactions() {
     txList.innerHTML = '<p class="text-secondary text-center p-4">No transactions found.</p>';
   } else {
     txList.innerHTML = txs.map(tx => {
-      const cat = catMap[tx.categoryId] || { name: 'Unknown', icon: 'question', color: '#64748b' };
       const acc = accMap[tx.accountId] || { name: 'Unknown' };
+
+      if (tx.type === 'transfer') {
+        const toAcc = accMap[tx.categoryId] || { name: 'Unknown' };
+        return `
+          <div class="tx-item" style="cursor: pointer;" onclick="editTransaction(${tx.id})">
+            <div class="tx-icon-wrapper" style="background-color: var(--info-color);">
+              <i class="ph ph-arrows-left-right"></i>
+            </div>
+            <div class="tx-details">
+              <div class="tx-title">Transfer</div>
+              <div class="tx-subtitle">${formatDate(tx.date)} &bull; ${acc.name} &rarr; ${toAcc.name}${tx.note ? ' &bull; ' + tx.note : ''}</div>
+            </div>
+            <div class="tx-amount" style="color: var(--info-color);">
+              ฿${formatCurrency(tx.amount)}
+            </div>
+          </div>
+        `;
+      }
+
+      const cat = catMap[tx.categoryId] || { name: 'Unknown', icon: 'question', color: '#64748b' };
       const isIncome = tx.type === 'income';
 
       return `

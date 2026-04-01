@@ -217,7 +217,8 @@ async function renderCreditCards(accountMap, ignored) {
   }
 
   // Calculate usage. Need all lifetime expenses for these cards (ignoring date filter for current limit)
-  const allTxs = await db.transactions.where('type').equals('expense').toArray();
+  // We also need transfers to this card (credit card payment) to deduct from total used.
+  const allTxs = await db.transactions.toArray();
   
   // Group by main card
   const mainCards = creditCards.filter(c => !c.parentCardId);
@@ -231,16 +232,26 @@ async function renderCreditCards(accountMap, ignored) {
     const familyCards = [mainCard, ...subCards];
     const familyIds = familyCards.map(c => c.id);
 
-    // Calculate total used for the family
-    const familyExpenses = allTxs.filter(tx => familyIds.includes(tx.accountId));
     let totalUsed = 0;
     let usedByCard = {};
-    
     familyCards.forEach(c => usedByCard[c.id] = 0);
 
-    familyExpenses.forEach(tx => {
-      totalUsed += Number(tx.amount);
-      usedByCard[tx.accountId] += Number(tx.amount);
+    // Calculate total used for the family
+    const familyTxs = allTxs.filter(tx => 
+      (tx.type === 'expense' && familyIds.includes(tx.accountId)) || 
+      (tx.type === 'transfer' && familyIds.includes(tx.categoryId))
+    );
+
+    familyTxs.forEach(tx => {
+      const amount = Number(tx.amount);
+      if (tx.type === 'expense') {
+        totalUsed += amount;
+        usedByCard[tx.accountId] += amount;
+      } else if (tx.type === 'transfer') {
+        // transfer to credit card acts as a payment, so it reduces usage
+        totalUsed -= amount;
+        usedByCard[tx.categoryId] -= amount;
+      }
     });
 
     const limit = Number(mainCard.limit) || 0;
