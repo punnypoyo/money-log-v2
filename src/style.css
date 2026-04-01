@@ -251,6 +251,7 @@ body {
 
 .form-control {
   width: 100%;
+  max-width: 100%;
   background: var(--bg-color);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -259,6 +260,17 @@ body {
   font-family: inherit;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-width: 0;
+}
+
+input[type="date"].form-control,
+input[type="datetime-local"].form-control {
+  display: block;
+  -webkit-appearance: none;
+  appearance: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .form-control:focus {
