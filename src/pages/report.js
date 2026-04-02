@@ -11,6 +11,9 @@ export async function renderReport(container) {
   const accounts = await db.accounts.toArray();
   const accOptions = accounts.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 
+  const categories = await db.categories.toArray();
+  const catOptions = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
   container.innerHTML = `
     <div class="card">
       <div class="card-header">
@@ -31,6 +34,13 @@ export async function renderReport(container) {
             <option value="all">All</option>
             <option value="expense">Expense</option>
             <option value="income">Income</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="report-category" class="form-control">
+            <option value="all">All Categories</option>
+            ${catOptions}
           </select>
         </div>
         <div class="form-group">
@@ -71,6 +81,7 @@ async function generateReport() {
     const toStr = document.getElementById('report-to').value;
     const typeVal = document.getElementById('report-type').value;
     const accountId = document.getElementById('report-account').value;
+    const categoryId = document.getElementById('report-category').value;
 
     if(!fromStr || !toStr) {
       resultDiv.innerHTML = '<p class="text-danger">Please select valid dates.</p>';
@@ -91,6 +102,9 @@ async function generateReport() {
     }
     if (accountId !== 'all') {
       txs = txs.filter(tx => tx.accountId == accountId);
+    }
+    if (categoryId !== 'all') {
+      txs = txs.filter(tx => tx.categoryId == categoryId);
     }
 
     if (txs.length === 0) {
